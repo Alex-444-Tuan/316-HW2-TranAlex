@@ -38,12 +38,11 @@ export default class SongCard extends React.Component {
         }));
     }
     handleDrop = (event) => {
-        event.preventDefault();
-        let target = event.target;
-        let targetId = target.id;
-        targetId = targetId.substring(target.id.indexOf("-") + 1);
-        let sourceId = event.dataTransfer.getData("song");
-        sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
+    event.preventDefault();
+    const targetId = event.currentTarget.id; // <- use currentTarget, not target
+    let targetIndex = parseInt(targetId.substring(targetId.indexOf("-") + 1)); // 1-based
+    let sourceId = event.dataTransfer.getData("song");
+    let sourceIndex = parseInt(sourceId.substring(sourceId.indexOf("-") + 1)); // 1-based
         
         this.setState(prevState => ({
             isDragging: false,
@@ -51,7 +50,7 @@ export default class SongCard extends React.Component {
         }));
 
         // ASK THE MODEL TO MOVE THE DATA
-        this.props.moveCallback(sourceId, targetId);
+    this.props.moveCallback(sourceIndex, targetIndex);
     }
 
     getItemNum = () => {
@@ -77,7 +76,17 @@ export default class SongCard extends React.Component {
                 onDrop={this.handleDrop}
                 draggable="true"
             >
-                {song.title} by {song.artist}
+                <span>{num}. </span>
+                <span>{song.title} by {song.artist}</span>
+                <input
+                    type="button"
+                    className="toolbar-button song-card-delete-button"
+                    value="&#x2715;"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        this.props.removeCallback(this.getItemNum() - 1);
+                    }}
+                />
             </div>
         )
     }

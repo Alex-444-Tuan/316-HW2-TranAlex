@@ -3,7 +3,7 @@ import React from "react";
 export default class EditToolbar extends React.Component {
     render() {
         const { canAddSong, canUndo, canRedo, canClose, 
-                undoCallback, redoCallback, closeCallback} = this.props;
+                undoCallback, redoCallback, closeCallback, addSongCallback} = this.props;
         let addSongClass = "toolbar-button";
         let undoClass = "toolbar-button";
         let redoClass = "toolbar-button";
@@ -19,6 +19,8 @@ export default class EditToolbar extends React.Component {
                 id='add-song-button' 
                 value="+" 
                 className={addSongClass}
+                onClick={addSongCallback}
+                disabled={!this.props.canAddSong}
             />
             <input 
                 type="button" 
@@ -26,6 +28,7 @@ export default class EditToolbar extends React.Component {
                 value="⟲" 
                 className={undoClass} 
                 onClick={undoCallback}
+                disabled={!this.props.canUndo}
             />
             <input 
                 type="button" 
@@ -33,6 +36,7 @@ export default class EditToolbar extends React.Component {
                 value="⟳" 
                 className={redoClass} 
                 onClick={redoCallback}
+                disabled={!this.props.canRedo}
             />
             <input 
                 type="button" 
@@ -40,6 +44,7 @@ export default class EditToolbar extends React.Component {
                 value="&#x2715;" 
                 className={closeClass} 
                 onClick={closeCallback}
+                disabled={!this.props.canClose}
             />
         </div>
         )
