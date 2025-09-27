@@ -7,6 +7,9 @@ import { jsTPS } from 'jstps';
 
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
+import CreateSong_Transaction from './transactions/CreateSong_Transaction.js';
+import EditSong_Transaction from './transactions/EditSong_Transcation.js';
+import RemoveSong_Transaction from './transactions/RemoveSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.jsx';
@@ -206,6 +209,30 @@ class App extends React.Component {
     getPlaylistSize = () => {
         return this.state.currentList.songs.length;
     }
+
+    createSong = (index, song) => {
+        let list = this.state.currentList;
+        if (!list) return;
+        list.songs.splice(index, 0, song);
+        this.setStateWithUpdatedList(list);
+    }
+
+    removeSong = (index) => {
+        let list = this.state.currentList;
+        if (!list) return;
+        list.songs.splice(index, 1);
+        this.setStateWithUpdatedList(list);
+    }
+
+    editSong(index, updatedSong) {
+        let list = this.state.currentList;
+        if (!list) return;
+
+        list.songs[index] = updatedSong;
+        this.setStateWithUpdatedList(list);
+    }
+
+
     // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
     // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
     moveSong(start, end) {
@@ -230,11 +257,48 @@ class App extends React.Component {
         }
         this.setStateWithUpdatedList(list);
     }
+
     // THIS FUNCTION ADDS A MoveSong_Transaction TO THE TRANSACTION STACK
     addMoveSongTransaction = (start, end) => {
         let transaction = new MoveSong_Transaction(this, start, end);
         this.tps.processTransaction(transaction);
     }
+
+    addCreateSongTransaction = () => {
+        if (!this.state.currentList) return;
+
+        // create default song
+        let newSong = {
+            title: "Untitled",
+            artist: "Unknown",
+            year:"",
+            youTubeId: "dQw4w9WgXcQ"
+        };
+
+        // song added at the end
+        let index = this.getPlaylistSize();
+
+        // make transaction and push to stack
+        let transaction = new CreateSong_Transaction(this, index, newSong);
+        this.tps.processTransaction(transaction);
+    }
+
+    addRemoveSongTransaction = (index) => {
+        if (!this.state.currentList) return;
+
+        let songToRemove = this.state.currentList.songs[index];
+        let transaction = new RemoveSong_Transaction(this, index, songToRemove);
+        this.tps.processTransaction(transaction);
+    }
+
+    addEditSongTransaction = (index, newSongData) => {
+    if (!this.state.currentList) return;
+
+    let oldSongData = { ...this.state.currentList.songs[index] };
+    let transaction = new EditSong_Transaction(this, index, newSongData, oldSongData);
+    this.tps.processTransaction(transaction);
+}
+
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -300,10 +364,13 @@ class App extends React.Component {
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
+                    addSongCallback={this.addCreateSongTransaction}
                 />
                 <SongCards
                     currentList={this.state.currentList}
-                    moveSongCallback={this.addMoveSongTransaction} />
+                    moveSongCallback={this.addMoveSongTransaction}
+                    removeSongCallback={this.addRemoveSongTransaction}
+                />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
