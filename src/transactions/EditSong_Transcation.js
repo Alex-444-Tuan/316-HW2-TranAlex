@@ -12,17 +12,13 @@ export default class EditSong_Transaction extends jsTPS_Transaction {
     /**
      * Initializes this object such that it can both do and undo the transaction
      * 
-     * @param {PlaylisterModel} initModel The M in MVC for this app
-     * @param {number} initIndex The index of where the song is to be created in the playlist
-     * @param {PlaylistSongPrototype} initNewSong The created song.
-     * @param {PlaylistSongPrototype} initOldSong The old song before editing.
      */
     constructor(initApp, initIndex, initNewSong, initOldSong) {
         super();
         this.app = initApp;
         this.index = initIndex;
-        this.newSong = initNewSong.clone();
-        this.oldSong = initOldSong.clone();
+        this.newSong = initNewSong;
+        this.oldSong = initOldSong;
     }
 
     /**

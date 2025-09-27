@@ -13,6 +13,7 @@ import RemoveSong_Transaction from './transactions/RemoveSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.jsx';
+import EditSongModal from './components/EditSongModal.jsx';
 
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.jsx';
@@ -39,7 +40,9 @@ class App extends React.Component {
         this.state = {
             listKeyPairMarkedForDeletion : null,
             currentList : null,
-            sessionData : loadedSessionData
+            sessionData : loadedSessionData,
+            songIndexBeingEdited: null,
+            isEditModalVisible: false
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -338,6 +341,21 @@ class App extends React.Component {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
+
+    showEditSongModal = (index) => {
+    this.setState({
+        isEditModalVisible: true,
+        songIndexBeingEdited: index
+    });
+    };
+
+    hideEditSongModal = () => {
+    this.setState({
+        isEditModalVisible: false,
+        songIndexBeingEdited: null
+    });
+    };
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
@@ -370,7 +388,7 @@ class App extends React.Component {
                     currentList={this.state.currentList}
                     moveSongCallback={this.addMoveSongTransaction}
                     removeSongCallback={this.addRemoveSongTransaction}
-                    editSongCallback={this.addEditSongTransaction}
+                    editSongCallback={this.showEditSongModal}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} />
@@ -378,6 +396,17 @@ class App extends React.Component {
                     listKeyPair={this.state.listKeyPairMarkedForDeletion}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     deleteListCallback={this.deleteMarkedList}
+                />
+                <EditSongModal
+                    isVisible={this.state.isEditModalVisible}
+                    songIndex={this.state.songIndexBeingEdited}
+                    currentSong={
+                        this.state.currentList
+                        ? this.state.currentList.songs[this.state.songIndexBeingEdited]
+                        : null
+                    }
+                    hideEditSongModalCallback={this.hideEditSongModal}
+                    editSongCallback={this.addEditSongTransaction}
                 />
             </>
         );
