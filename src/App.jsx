@@ -196,6 +196,7 @@ class App extends React.Component {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
             this.tps.clearAllTransactions();
+            this.setState({});
         });
     }
     setStateWithUpdatedList(list) {
