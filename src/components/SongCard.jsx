@@ -77,7 +77,10 @@ export default class SongCard extends React.Component {
                 draggable="true"
             >
                 <span>{num}. </span>
-                <span>{song.title} by {song.artist}</span>
+                <a href={song.youTubeId} className="song-card-title">{song.title}</a>
+                <span> ({song.year})</span>
+                <span> by</span>
+                <span className="song-card-artist"> {song.artist}</span>
                 <input
                     type="button"
                     className="toolbar-button song-card-delete-button"

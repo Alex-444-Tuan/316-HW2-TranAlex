@@ -8,9 +8,16 @@
   --swatch-primary: #e6e6e6; 
   --swatch-complement: #e1e4cb;
   --swatch-contrast: #111111; 
+  --swatch-link-emphasis: #b88320;
   --swatch-accent: #669966; 
+  --swatch-link-hover:pink;
+  --swatch-link-contrast:lightgreen;
   --swatch-status: #123456;
   --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
+}
+
+a{
+  text-decoration: none;
 }
 
 body {
@@ -19,7 +26,7 @@ body {
 
 #root {
   background-color: var(--swatch-primary);
-  font-family: serif;
+  font-family:"Italiana", serif;
   position: absolute;
   width: 80%;
   left: 10%;
@@ -121,12 +128,14 @@ body {
   color:white;
 }
 
-.selected-playlist-card {
+.selected-playlist-card,
+.selected-song-card {
   background-color: var(--swatch-accent);
   color: white;
 }
 
-.unselected-playlist-card {
+.unselected-playlist-card,
+.unselected-song-card {
   background-color: var(--swatch-complement);
 }
 
@@ -149,10 +158,22 @@ body {
 }
 
 .song-card, .song-card-dragged-to { 
-  display:flex;
-  align-items: center;
   font-size: 24pt;
-  height:20%;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 125px;
+  background-color: var(--swatch-complement);
+  color: var(--swatch-contrast);
+}
+
+.song-card:hover {
+cursor: pointer;
+background-color: var(--swatch-contrast);
+color: var(--swatch-primary);
+}
+
+.song-card:hover .song-card-title {
+  color: var(--swatch-link-contrast)
 }
 
 input {
@@ -186,8 +207,8 @@ input {
 
 .modal-root {
   position: relative;
-  max-width: 1200vw;
-  max-height: 600vh;
+  max-width: 1300px;
+  max-height: 500vh;
   overflow: visible;
   display: flex;
   flex-direction: column;
@@ -198,6 +219,7 @@ input {
   border-style: solid;
   box-shadow: 5px 10px #888888;
 }
+
 
 .modal-root > * {
   padding: 1rem;
@@ -213,7 +235,7 @@ input {
 .modal-center {
   display: grid;
   grid-template-columns: 30% 65%;
-  grid-template-rows: 33% 33% 33%;
+  grid-template-rows: 20% 20% 20% 20% 20%;
   gap: 10px 20px;
   font-size: 48pt;
 }
@@ -356,4 +378,20 @@ span {
   100% {
     transform: rotate(0deg);
   }
+}
+
+.song-card-delete-button {
+  float: right;
+}
+
+.song-card-title{
+  color: var(--swatch-link-emphasis)
+}
+
+.song-card:hover .song-card-title:hover {
+  color: var(--swatch-link-hover);
+}
+
+.song-card-artist{
+  color: red;
 }

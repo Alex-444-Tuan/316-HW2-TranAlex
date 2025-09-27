@@ -271,8 +271,8 @@ class App extends React.Component {
         let newSong = {
             title: "Untitled",
             artist: "Unknown",
-            year:"",
-            youTubeId: "dQw4w9WgXcQ"
+            year:"Unknown",
+            youTubeId: "Unknown"
         };
 
         // song added at the end
@@ -370,6 +370,7 @@ class App extends React.Component {
                     currentList={this.state.currentList}
                     moveSongCallback={this.addMoveSongTransaction}
                     removeSongCallback={this.addRemoveSongTransaction}
+                    editSongCallback={this.addEditSongTransaction}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} />
