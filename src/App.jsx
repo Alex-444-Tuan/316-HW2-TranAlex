@@ -451,6 +451,7 @@ class App extends React.Component {
                 <Banner />
                 <SidebarHeading
                     createNewListCallback={this.createNewList}
+                    canAddNewList={this.state.currentList === null}
                 />
                 <SidebarList
                     currentList={this.state.currentList}
