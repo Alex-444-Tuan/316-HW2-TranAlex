@@ -213,6 +213,53 @@ class App extends React.Component {
         return this.state.currentList.songs.length;
     }
 
+    // DUPLICATE PLAYLIST
+    duplicatePlaylist = (key) => {
+        const listToDuplicate = this.db.queryGetList(key);
+        if (!listToDuplicate) return;
+
+        // Always use string keys to match existing storage format
+        const newKey = String(this.state.sessionData.nextKey);
+        const newName = listToDuplicate.name + " (Copy)";
+        const duplicatedSongs = JSON.parse(JSON.stringify(listToDuplicate.songs));
+
+        const newList = {
+            key: newKey,
+            name: newName,
+            songs: duplicatedSongs
+        };
+
+        // Create the new keyNamePair
+        const newKeyNamePair = { key: newKey, name: newName };
+        const updatedPairs = [...this.state.sessionData.keyNamePairs, newKeyNamePair];
+        this.sortKeyNamePairsByName(updatedPairs);
+
+        // Update state properly
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey + 1,
+                counter: prevState.sessionData.counter + 1,
+                keyNamePairs: updatedPairs
+            }
+        }), () => {
+            // Save both list and session data to LocalStorage
+            this.db.mutationCreateList(newList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+
+            // Force UI refresh by loading session data again from localStorage
+            const reloaded = this.db.queryGetSessionData();
+            this.setState({ sessionData: reloaded });
+        });
+        console.log("All lists:", this.state.sessionData.keyNamePairs);
+
+    };
+
+
+
+    //FUNCTIONS THAT SUPPORT THE TRANSACTIONS
+
+    //create new song
     createSong = (index, song) => {
         let list = this.state.currentList;
         if (!list) return;
@@ -220,6 +267,7 @@ class App extends React.Component {
         this.setStateWithUpdatedList(list);
     }
 
+    // remove a song
     removeSong = (index) => {
         let list = this.state.currentList;
         if (!list) return;
@@ -227,6 +275,7 @@ class App extends React.Component {
         this.setStateWithUpdatedList(list);
     }
 
+    // edit a song
     editSong(index, updatedSong) {
         let list = this.state.currentList;
         if (!list) return;
@@ -286,6 +335,7 @@ class App extends React.Component {
         this.tps.processTransaction(transaction);
     }
 
+    //remove song transaction
     addRemoveSongTransaction = (index) => {
         if (!this.state.currentList) return;
 
@@ -294,6 +344,7 @@ class App extends React.Component {
         this.tps.processTransaction(transaction);
     }
 
+    // add song transaction
     addEditSongTransaction = (index, newSongData) => {
     if (!this.state.currentList) return;
 
@@ -302,6 +353,7 @@ class App extends React.Component {
     this.tps.processTransaction(transaction);
     }
 
+    // duplicate song transaction (reuse create song transaction)
     addDuplicateSongTransaction = (index) => {
     if (!this.state.currentList) return;
     const songToDuplicate = { ...this.state.currentList.songs[index] };
@@ -372,6 +424,7 @@ class App extends React.Component {
         modal.classList.remove("is-visible");
     }
 
+    // THIS FUNCTION WILL SHOW THE EDIT SONG MODAL WHEN DOUBLE CLICK ON THE SONG CARD
     showEditSongModal = (index) => {
     this.setState({
         isEditModalVisible: true,
@@ -379,6 +432,7 @@ class App extends React.Component {
     });
     };
 
+    // THIS FUNCTION WILL HIDE THE EDIT SONG MODAL WHEN HIT CANCEL BUTTON SHOWN ON THE MODAL
     hideEditSongModal = () => {
     this.setState({
         isEditModalVisible: false,
@@ -403,6 +457,7 @@ class App extends React.Component {
                     deleteListCallback={this.markListForDeletion}
                     loadListCallback={this.loadList}
                     renameListCallback={this.renameList}
+                    duplicateListCallback={this.duplicatePlaylist}
                 />
                 <EditToolbar
                     canAddSong={canAddSong}
