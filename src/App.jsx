@@ -320,6 +320,27 @@ class App extends React.Component {
             this.db.mutationUpdateList(this.state.currentList);
         }
     }
+
+    // hook the undo, redo button to crlt + z, crlt + y
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === 'z') {
+        event.preventDefault();
+        this.undo();
+    } 
+    else if (event.ctrlKey && event.key === 'y') {
+        event.preventDefault();
+        this.redo();
+    }
+    };
+
     markListForDeletion = (keyPair) => {
         this.setState(prevState => ({
             currentList: prevState.currentList,
