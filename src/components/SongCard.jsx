@@ -87,7 +87,16 @@ export default class SongCard extends React.Component {
                 <span className="song-card-artist"> {song.artist}</span>
                 <input
                     type="button"
-                    className="toolbar-button song-card-delete-button"
+                    className="toolbar-button song-card-button"
+                    value="⎘"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        this.props.duplicateCallback(this.getItemNum()-1)
+                    }}
+                />
+                <input
+                    type="button"
+                    className="toolbar-button song-card-button"
                     value="&#x2715;"
                     onClick={(e) => {
                         e.stopPropagation();

@@ -300,7 +300,16 @@ class App extends React.Component {
     let oldSongData = { ...this.state.currentList.songs[index] };
     let transaction = new EditSong_Transaction(this, index, newSongData, oldSongData);
     this.tps.processTransaction(transaction);
-}
+    }
+
+    addDuplicateSongTransaction = (index) => {
+    if (!this.state.currentList) return;
+    const songToDuplicate = { ...this.state.currentList.songs[index] };
+    const insertIndex = index + 1;
+    const transaction = new CreateSong_Transaction(this, insertIndex, songToDuplicate);
+    this.tps.processTransaction(transaction);
+    };
+
 
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
@@ -410,6 +419,7 @@ class App extends React.Component {
                     moveSongCallback={this.addMoveSongTransaction}
                     removeSongCallback={this.addRemoveSongTransaction}
                     editSongCallback={this.showEditSongModal}
+                    duplicateSongCallback={this.addDuplicateSongTransaction}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} />
