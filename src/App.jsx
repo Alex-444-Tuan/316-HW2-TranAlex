@@ -36,6 +36,9 @@ class App extends React.Component {
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
 
+        // SORT THE LIST AFTER GET THE DATA
+        this.sortKeyNamePairsByName(loadedSessionData.keyNamePairs);
+
         // SETUP THE INITIAL STATE
         this.state = {
             listKeyPairMarkedForDeletion : null,
